@@ -19,59 +19,52 @@ const getBookedBookings = () => stringToList(PropertiesService.getUserProperties
 const getAvailableBookings = () => getSavedBookings().filter(item => !getBookedBookings().includes(item))
 
 const stringToList = (string) => {
-    if (!string) {
-        return []
-    } else if (string.endsWith(',')) {
-        string = string.slice(0, -1)
-    }
-    return string ? string.split(',') : []
+  if (!string) {
+    return []
+  } else if (string.endsWith(',')) {
+    string = string.slice(0, -1)
+  }
+  return string ? string.split(',') : []
 }
 
 // const deleteBookingsProp = () => PropertiesService.getUserProperties().deleteProperty(BOOKINGS_NAME)
 
-// const getAvailableBookings = () => {
-//   const futureBookings = Object.keys(listMyFutureBookings())
-//   const savedBookings = getSavedBookings()
-//   // console.log(savedBookings, futureBookings)
-//   // console.log(savedBookings.filter(item => !futureBookings.includes(item)))
-//   return savedBookings.filter(item => !futureBookings.includes(item))
-// }
 
 /** Calendar functions */
 const getCalendarEvent = (eventId) => Calendar.Events.get(PRIMARY_CALENDAR, eventId)
 const updateCalendarEvent = (event) => Calendar.Events.update(event, PRIMARY_CALENDAR, event.id)
 
 const searchAvailabilityByCalendar = (
-    startTime = '2024-04-11T09:30:00+02:00',
-    endTime = '2024-04-11T10:00:00+02:00'
+  startTime='2024-04-11T09:30:00+02:00',
+  endTime='2024-04-11T10:00:00+02:00'
 ) => {
-    // const events = listCalendarEvents(fixTimezone(startTime), fixTimezone(endTime), LOFTMILL_CALENDAR).items
-    const events = listCalendarEvents(startTime, endTime, LOFTMILL_CALENDAR).items
+  // const events = listCalendarEvents(fixTimezone(startTime), fixTimezone(endTime), LOFTMILL_CALENDAR).items
+  const events = listCalendarEvents(startTime, endTime, LOFTMILL_CALENDAR).items
 
-    const bookedRooms = []
-    for (let i in events) {
-        const resource = events[i].description
-        // console.log(resource)
-        bookedRooms.push(resource)
-    }
-    return bookedRooms
+  const bookedRooms = []
+  for (let i in events) {
+    const resource = events[i].description
+    // console.log(resource)
+    bookedRooms.push(resource)
+  }
+  return bookedRooms
 }
 
 const findAvailableResources = (
-    startTime = '2024-04-11T09:30:00+02:00',
-    endTime = '2024-04-11T10:00:00+02:00'
+  startTime='2024-04-11T09:30:00+02:00',
+  endTime='2024-04-11T10:00:00+02:00'
 ) => {
-    const bookedResources = searchAvailabilityByCalendar(startTime, endTime)
-    const allResources = getRooms()
-    // console.log(bookedResources,allResources)
+  const bookedResources = searchAvailabilityByCalendar(startTime, endTime)
+  const allResources = getRooms()
+  // console.log(bookedResources,allResources)
 
-    for (let i in bookedResources) {
-        // console.log(bookedResources[i])
-        delete allResources[bookedResources[i]]
-    }
+  for (let i in bookedResources) {
+    // console.log(bookedResources[i])
+    delete allResources[bookedResources[i]]
+  }
 
-    // console.log(allResources)
-    return allResources
+  // console.log(allResources)
+  return allResources
 }
 
 // const fixTimezone = (date='2024-04-11T10:00:00+02:00') => {
@@ -82,7 +75,7 @@ const findAvailableResources = (
 //   return (new Date(fixedDate)).toISOString()
 // }
 
-const listCalendarEvents = (startDate, endDate, calendar = PRIMARY_CALENDAR) => {
+const listCalendarEvents = (startDate, endDate, calendar=PRIMARY_CALENDAR) => {
     return Calendar.Events.list(calendar, {
         timeMin: startDate,
         timeMax: endDate,
