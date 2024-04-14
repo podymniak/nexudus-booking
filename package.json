@@ -1,0 +1,24 @@
+{
+  "name": "uusa-funnel",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {},
+  "description": "",
+  "main": "app/main.gs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "push": "clasp push -f",
+    "dev": "clasp push -f --watch",
+    "pull": "clasp pull",
+    "open": "clasp open",
+    "deploy": "clasp deploy",
+    "load & deploy": "clasp push -f; clasp deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/clasp": "^2.4.2",
+    "@types/google-apps-script": "^1.0.64"
+  }
+}
