@@ -13,17 +13,17 @@ const deleteUserProps = () => PropertiesService.getUserProperties().deleteAllPro
 
 
 const setPasswordFromInput = (e) => {
-  const password = e.formInput.password
-  const passwordTest = getToken(password)
+    const password = e.formInput.password
+    const passwordTest = getToken(password)
 
-  if (!passwordTest.error) {
-    setPassword(password)
-  }
+    if (!passwordTest.error) {
+        setPassword(password)
+    }
 
-  return cardWithNotification(e,
-      e.calendar.id ? onCalendarEventOpen : passwordTest.error ? noPasswordCard : onHomepageEventOpen,
-      passwordTest.error || 'Password set correctly'
-  )
+    return cardWithNotification(e,
+        e.calendar.id ? onCalendarEventOpen : passwordTest.error ? noPasswordCard : onHomepageEventOpen,
+        passwordTest.error || 'Password set correctly'
+    )
 }
 
 const test = () => console.log(getToken())
@@ -35,48 +35,48 @@ const test = () => console.log(getToken())
  * return access token (or null if error TODO: function to reset password)
  */
 const getToken = (password = getPassword()) => {
-  let accessToken = getAccessToken()
+    let accessToken = getAccessToken()
 
-  if (accessToken) {
-    return accessToken
-  }
+    if (accessToken) {
+        return accessToken
+    }
 
-  try {
-    const response = UrlFetchApp.fetch(
-      `https://spaces.nexudus.com/api/token`, 
-      {
-        method: 'POST',
-        headers: {
-          accept: 'application/json',
-          client_id: USER_EMAIL,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        payload: 
-        // refreshToken ?
-        //   {
-        //     grant_type: 'refresh_token',
-        //     refresh_token: refreshToken
-        //   }
-        //   : 
-          {
-            grant_type: 'password',
-            username: USER_EMAIL,
-            password: password
-          }
-      }
-    )
+    try {
+        const response = UrlFetchApp.fetch(
+            `https://spaces.nexudus.com/api/token`,
+            {
+                method: 'POST',
+                headers: {
+                    accept: 'application/json',
+                    client_id: USER_EMAIL,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                payload:
+                // refreshToken ?
+                //   {
+                //     grant_type: 'refresh_token',
+                //     refresh_token: refreshToken
+                //   }
+                //   :
+                    {
+                        grant_type: 'password',
+                        username: USER_EMAIL,
+                        password: password
+                    }
+            }
+        )
 
-    accessToken = JSON.parse(response.getContentText()).access_token
-    setAccessToken(accessToken)
-    // console.log(accessToken)
-    return accessToken
+        accessToken = JSON.parse(response.getContentText()).access_token
+        setAccessToken(accessToken)
+        // console.log(accessToken)
+        return accessToken
 
-  } catch (e) {
-    // console.log('Input password')
-    deleteUserProps()
-    // getToken()
-    return {error: e}
-  }
+    } catch (e) {
+        // console.log('Input password')
+        deleteUserProps()
+        // getToken()
+        return {error: e}
+    }
 }
 
 

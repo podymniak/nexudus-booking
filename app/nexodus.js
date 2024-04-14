@@ -3,123 +3,126 @@ const EXCLUDED_RESOURCES = [1415077508]
 
 
 function listMyFutureBookings() {
-  const accessToken = getToken()
+    const accessToken = getToken()
 
-  if (accessToken.error) {
-    console.log(accessToken.error)
-    return {error: accessToken.error}
-  }
-
-  const response = UrlFetchApp.fetch(
-    `${API_ENDPOINT}/bookings/my?_depth=3`, 
-    {
-      method: 'POST',
-      headers: {
-        accept: 'application/json',
-        'Content-Type': 'application/json',
-        authorization: `Bearer ${accessToken}`
-      }
+    if (accessToken.error) {
+        console.log(accessToken.error)
+        return {error: accessToken.error}
     }
-  )
-  const myBookings = JSON.parse(response.getContentText()).MyBookings
 
-  const myFutureBookings = {}
-  for (let i in myBookings) {
-    const bookingId = myBookings[i].Id
+    const response = UrlFetchApp.fetch(
+        `${API_ENDPOINT}/bookings/my?_depth=3`,
+        {
+            method: 'POST',
+            headers: {
+                accept: 'application/json',
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${accessToken}`
+            }
+        }
+    )
+    const myBookings = JSON.parse(response.getContentText()).MyBookings
 
-    myFutureBookings[bookingId] = {
-      room: myBookings[i].ResourceName.split(' ')[0],
-      startTime: myBookings[i].FromTime,
-      endTime: myBookings[i].ToTime,
+    const myFutureBookings = {}
+    for (let i in myBookings) {
+        const bookingId = myBookings[i].Id
+
+        myFutureBookings[bookingId] = `📅 ${myBookings[i].FromTime.split('T')[0]} 
+            🕒 ${myBookings[i].FromTime.split('T')[1].slice(0, 5)}-${myBookings[i].ToTime.split('T')[1].slice(0, 5)} 
+            ${myBookings[i].ResourceName}`
+
+        // myFutureBookings[bookingId] = {
+        //   room: myBookings[i].ResourceName.split(' ')[0],
+        //   startTime: myBookings[i].FromTime,
+        //   endTime: myBookings[i].ToTime,
+        // }
     }
-  }
 
-  // console.log(JSON.stringify(myFutureBookings, " ", 4))
-  return myFutureBookings
+    // console.log(JSON.stringify(myFutureBookings, " ", 4))
+    return myFutureBookings
 }
 
 
 function getRooms() {
-  const options = {
-    method: 'GET',
-    headers: {accept: 'application/json', 'Content-Type': 'application/json'}
-  }
-
-  const response = UrlFetchApp.fetch(`${API_ENDPOINT}/bookings/search`, options)
-  const resources = JSON.parse(response.getContentText()).Resources
-
-  // console.log(JSON.parse(response.getContentText()))
-  let rooms = {}
-  for (room in resources) {
-    if (!EXCLUDED_RESOURCES.includes(resources[room].Id)) {
-      rooms[resources[room].Name] = resources[room].Id
+    const options = {
+        method: 'GET',
+        headers: {accept: 'application/json', 'Content-Type': 'application/json'}
     }
-  }
-  // console.log(rooms)
-  return rooms
+
+    const response = UrlFetchApp.fetch(`${API_ENDPOINT}/bookings/search`, options)
+    const resources = JSON.parse(response.getContentText()).Resources
+
+    // console.log(JSON.parse(response.getContentText()))
+    let rooms = {}
+    for (room in resources) {
+        if (!EXCLUDED_RESOURCES.includes(resources[room].Id)) {
+            rooms[resources[room].Name] = resources[room].Id
+        }
+    }
+    // console.log(rooms)
+    return rooms
 }
 
 
 const updateBooking = (resource, startTime, endTime, bookingId) => {
-  // console.log(resource, startTime, endTime, bookingId)
+    // console.log(resource, startTime, endTime, bookingId)
 
-  const response = UrlFetchApp.fetch(
-  `${API_ENDPOINT}/bookings/bookingJson`, 
-  {
-    method: 'POST',
-    headers: {
-      accept: 'application/json',
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${getToken()}`
-    },
-    payload: JSON.stringify({
-      booking: {
-          ResourceId: resource,
-          FromTime: startTime.split('+')[0],
-          ToTime: endTime.split('+')[0],
-          Id: bookingId,
-          resource: {
-            Id: resource
-          }
-        }
-    })
-  })
-  console.log(response.getContentText())
-  const result = JSON.parse(response.getContentText())
-  //{"Status":200,"Message":"Your booking has been updated","Value":null,"OpenInDialog":false,"OpenInWindow":false,"RedirectURL":null,"JavaScript":null,"UpdatedOn":null,"UpdatedBy":null,"Errors":null,"WasSuccessful":true}
-  return {
-    error: !result.WasSuccessful,
-    message: result.Message
-  }
+    const response = UrlFetchApp.fetch(
+        `${API_ENDPOINT}/bookings/bookingJson`,
+        {
+            method: 'POST',
+            headers: {
+                accept: 'application/json',
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${getToken()}`
+            },
+            payload: JSON.stringify({
+                booking: {
+                    ResourceId: resource,
+                    FromTime: startTime.split('+')[0],
+                    ToTime: endTime.split('+')[0],
+                    Id: bookingId,
+                    resource: {
+                        Id: resource
+                    }
+                }
+            })
+        })
+    console.log(response.getContentText())
+    const result = JSON.parse(response.getContentText())
+    //{"Status":200,"Message":"Your booking has been updated","Value":null,"OpenInDialog":false,"OpenInWindow":false,"RedirectURL":null,"JavaScript":null,"UpdatedOn":null,"UpdatedBy":null,"Errors":null,"WasSuccessful":true}
+    return {
+        error: !result.WasSuccessful,
+        message: result.Message
+    }
 }
 
 
 const getBookingCalendar = (
-    startTime='2024-04-15T12:30:00+02:00', 
-    endTime='2024-04-15T13:00:00+02:00'
-    ) => {
+    startTime = '2024-04-15T12:30:00+02:00',
+    endTime = '2024-04-15T13:00:00+02:00'
+) => {
     response = UrlFetchApp.fetch(
-      `${API_ENDPOINT}/bookings/fullCalendarBookings`,
-      {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        payload: JSON.stringify({
-          // TODO better fix for date format
-          start: startTime.split('+')[0],
-          end: endTime.split('+')[0]
-        })
-      }
+        `${API_ENDPOINT}/bookings/fullCalendarBookings`,
+        {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            payload: JSON.stringify({
+                // TODO better fix for date format
+                start: startTime.split('+')[0],
+                end: endTime.split('+')[0]
+            })
+        }
     )
 
     const resources = JSON.parse(response.getContentText())
     for (let i in resources) {
-      console.log(`${resources[i].title}, start: ${resources[i].start}, end: ${resources[i].end}`, resources[i].id)
+        console.log(`${resources[i].title}, start: ${resources[i].start}, end: ${resources[i].end}`, resources[i].id)
     }
 }
-
 
 
 // /**
