@@ -33,11 +33,15 @@ function listMyFutureBookings() {
     for (let i in myBookings) {
         const bookingId = myBookings[i].Id
 
-        myFutureBookings[bookingId] = {
-            room: myBookings[i].ResourceName.split(' ')[0],
-            startTime: myBookings[i].FromTime,
-            endTime: myBookings[i].ToTime,
-        }
+        myFutureBookings[bookingId] = `📅 ${myBookings[i].FromTime.split('T')[0]} 
+            🕒 ${myBookings[i].FromTime.split('T')[1].slice(0, 5)}-${myBookings[i].ToTime.split('T')[1].slice(0, 5)} 
+            ${myBookings[i].ResourceName}`
+
+        // myFutureBookings[bookingId] = {
+        //   room: myBookings[i].ResourceName.split(' ')[0],
+        //   startTime: myBookings[i].FromTime,
+        //   endTime: myBookings[i].ToTime,
+        // }
     }
 
     // console.log(JSON.stringify(myFutureBookings, " ", 4))
