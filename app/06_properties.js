@@ -1,6 +1,6 @@
 /**
  * This file is for working with script / user properties
- * Access-related properties are in token.js
+ * Access-related properties are in 07_token.js
  */
 const setSavedBookings = (list) => PropertiesService.getUserProperties().setProperty(SAVED_BOOKINGS_NAME, list.join(','))
 const setBookedBookings = (list) => PropertiesService.getUserProperties().setProperty(BOOKED_BOOKINGS_NAME, list.join(','))
