@@ -5,6 +5,7 @@ const onHomepage = (e) => {
     }
     return noPasswordCard(e)
 }
+
 const onCalendarEventOpen = e => {
     if (getPassword()) {
         const event = CalendarApp.getCalendarById(PRIMARY_CALENDAR).getEventById(e.calendar.id)
@@ -14,37 +15,54 @@ const onCalendarEventOpen = e => {
 }
 
 
-/** MAIN */
+/**
+ * HOMEPAGE CARD
+ * @param e
+ * @returns {GoogleAppsScript.Card_Service.ActionResponse|GoogleAppsScript.Card_Service.Card}
+ */
 const homePageCard = e => {
     const myFutureBookings = listMyFutureBookings()
+    if (myFutureBookings.error) { //TODO
+        return cardWithNotification(e, noPasswordCard, myFutureBookings.error)
+    }
     updatedBookedBookings(myFutureBookings)
 
     const section = CardService.newCardSection()
-            .addWidget(availableBookingsWidget())
+        .addWidget(availableBookingsWidget())
 
     if (myFutureBookings.length === 0) {
-      section.addWidget(CardService.newTextParagraph().setText('No future bookings'))
+        section.addWidget(CardService.newTextParagraph().setText('No future bookings'))
     } else {
-    const myFutureBookingsWidget = CardService.newSelectionInput()
-        .setFieldName('free_slots')
-        .setTitle('Future bookings:')
-        .setType(CardService.SelectionInputType.CHECK_BOX)
+        const myFutureBookingsWidget = CardService.newSelectionInput()
+            .setFieldName('free_slots')
+            .setTitle('Future bookings:')
+            .setType(CardService.SelectionInputType.CHECK_BOX)
 
-    for (let bookingId in myFutureBookings) {
-      myFutureBookingsWidget
-          .addItem(`${myFutureBookings[bookingId].room} ${myFutureBookings[bookingId].startTime} ${myFutureBookings[bookingId].endTime} \n`, bookingId, false)
+        for (let bookingId in myFutureBookings) {
+            myFutureBookingsWidget
+                .addItem(`${myFutureBookings[bookingId].room} ${myFutureBookings[bookingId].startTime} ${myFutureBookings[bookingId].endTime} \n`, bookingId, false)
+        }
+
+        const addSlotsButton = CardService.newTextButton()
+            .setText('Make usable slots')
+            // .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
+            .setOnClickAction(
+                CardService.newAction().setFunctionName('saveBookings')
+            )
+
+        section.addWidget(myFutureBookingsWidget)
+        section.addWidget(addSlotsButton)
     }
 
-    const addSlotsButton = CardService.newTextButton()
-                .setText('Make usable slots')
-                // .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
-                .setOnClickAction(
-                  CardService.newAction().setFunctionName('saveBookings')
-                )
+    const explanation = CardService.newTextParagraph().setText(
+        `▶️ Public API doesn't allow creating<br>new bookings, so we need to use<br>existing ones. 
+      <b>1.</b> Create dummy bookings in <a href=${NEXUDUS_LOCAL_WEBSITE}>Nexudus</a> (outside of working hours). Up to ${MAX_SLOTS} slots are available.
+      <b>2.</b> Refresh addon, choose your dummy bookings and press the button.<br>
+      ☑️ Now you can book rooms from<br>your calendar! Your slots will reset<br>after each meeting, so no need to repeat these steps.`
+    )
 
-      section.addWidget(myFutureBookingsWidget)
-      section.addWidget(addSlotsButton)
-    }
+    section.addWidget(explanation)
+    section.addWidget(mapButton())
 
     return CardService.newCardBuilder()
         .setHeader(getHeader())
@@ -54,50 +72,57 @@ const homePageCard = e => {
 }
 
 
-
-function eventCard(event) {
+/**
+ * EVENT CARD
+ * @param event
+ * @returns {GoogleAppsScript.Card_Service.Card}
+ */
+const eventCard = (event) => {
     const card = CardService.newCardBuilder()
         .setHeader(getHeader())
         .setFixedFooter(getFooter())
 
     /** Existing event (excludes all day events (TODO exclude OOO)) */
     if (event?.start?.dateTime) {
-      // console.log(event)
-      const eventProps = readExtendedPropertiesFromEvent(event)
-      card.addSection(bookingStatusSection(eventProps))
-      card.addSection(availableResourcesSection(event))
-      return card.build()
+        // console.log(event)
+        const eventProps = readExtendedPropertiesFromEvent(event)
+        card.addSection(bookingStatusSection(eventProps))
+        card.addSection(availableResourcesSection(event))
+        return card.build()
     }
 
     /** Unrecognized event */
-      card.addSection(CardService.newCardSection().addWidget(
-      CardService.newTextParagraph().setText('Unrecognized event')
-      )
+    card.addSection(CardService.newCardSection().addWidget(
+            CardService.newTextParagraph().setText('Unrecognized event')
+        )
     )
-    
+
     return card.build()
 }
-
 
 
 /** SECTIONS */
 const availableBookingsWidget = () => {
     const availableBookings = getAvailableBookings().length
     return CardService.newTextParagraph().setText(
-      `<b>Available slots:</b> ${availableBookings < MAX_SLOTS ? availableBookings : MAX_SLOTS} (max ${MAX_SLOTS})`
+        `<b>Available slots:</b> ${availableBookings < MAX_SLOTS ? availableBookings : MAX_SLOTS} (max ${MAX_SLOTS})`
     )
 }
 
+const mapButton = () => CardService.newTextButton()
+    .setText('Office map')
+    .setOpenLink(CardService.newOpenLink().setUrl(OFFICE_MAP))
+
 
 const bookingStatusSection = (eventProps) => {
-  const section = CardService.newCardSection().setHeader('Booking Status')
+    const section = CardService.newCardSection().setHeader('Booking Status')
 
-  if (!eventProps.resourceId) {
-    return section.addWidget(CardService.newTextParagraph().setText(`No room booked.`))
-  }
+    if (!eventProps.resourceId) {
+        return section.addWidget(CardService.newTextParagraph().setText(`No room booked.`))
+    }
 
-  return section.addWidget(CardService.newTextParagraph()
-      .setText(`<b>${eventProps.resourceName}</b>
+    return section.addWidget(CardService.newTextParagraph()
+        .setText(`<b>${eventProps.resourceName}</b>
       ${eventProps.startTime.replace("T", " at ").split('+')[0]} - start
       ${eventProps.endTime.replace("T", " at ").split('+')[0]} - end
       `))
@@ -108,7 +133,7 @@ const availableResourcesSection = (event) => {
     const section = CardService.newCardSection().addWidget(availableBookingsWidget())
 
     if (getAvailableBookings().length === 0) {
-      return section
+        return section
     }
 
     // const availableResources = searchAvailableResources(event.start.dateTime, event.end.dateTime)
@@ -116,7 +141,7 @@ const availableResourcesSection = (event) => {
     const availableResources = getBookingCalendar(event.start.dateTime, event.end.dateTime)
 
     if (availableResources.length === 0) {
-      return section.addWidget(CardService.newTextParagraph().setText('No available rooms on that time'))
+        return section.addWidget(CardService.newTextParagraph().setText('No available rooms on that time'))
     }
 
     const availableResourcesWidget = CardService.newSelectionInput()
@@ -125,23 +150,23 @@ const availableResourcesSection = (event) => {
         .setType(CardService.SelectionInputType.RADIO_BUTTON)
 
     for (let resourceName in availableResources) {
-      // console.log(resourceNmae)
-      availableResourcesWidget
-          .addItem(resourceName, `${resourceName}|;|${availableResources[resourceName].toString()}`, false)
+        // console.log(resourceNmae)
+        availableResourcesWidget
+            .addItem(resourceName, `${resourceName}|;|${availableResources[resourceName].toString()}`, false)
     }
 
     const bookButton = CardService.newTextButton()
-            .setText('Book room')
-            .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
-            .setOnClickAction(
-              CardService.newAction().setFunctionName('bookResource')
-            )
+        .setText('Book room')
+        .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
+        .setOnClickAction(
+            CardService.newAction().setFunctionName('bookResource')
+        )
 
     return section
         .addWidget(availableResourcesWidget)
         .addWidget(bookButton)
+        .addWidget(mapButton())
 }
-
 
 
 /** NO PASSWORD CARD */
@@ -153,7 +178,7 @@ const noPasswordCard = e => {
                 CardService.newTextInput()
                     .setFieldName('password')
                     .setTitle('Password to your Nexudus account:')
-                    .setHint('WARNING! IT WILL BE VISIBLE')
+                    .setHint('WARNING! IT WILL BE VISIBLE WHEN TYPING')
                     .setOnChangeAction(CardService.newAction()
                         .setLoadIndicator(CardService.LoadIndicator.SPINNER)
                         .setFunctionName('setPasswordFromInput')
@@ -169,22 +194,21 @@ const getHeader = (
 ) => CardService.newCardHeader()
     .setTitle(title)
     .setSubtitle(subtitle)
-    .setImageStyle(CardService.ImageStyle.SQUARE)
+    .setImageStyle(CardService.ImageStyle.CIRCLE)
     .setImageUrl(icon)
 
 const getFooter = () => CardService.newFixedFooter()
     .setPrimaryButton(
         CardService.newTextButton()
-            // .setText('SHARE / RATE US')
-            .setText('LOFTMIL')
+            .setText('SHARE THE LOVE')
             .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
-            .setOpenLink(CardService.newOpenLink().setUrl('https://warszawalixa.spaces.nexudus.com/bookings/calendar'))
+            .setOpenLink(CardService.newOpenLink().setUrl(PRIMARY_BUTTON_LINK))
     )
-    // .setSecondaryButton(
-    //     CardService.newTextButton()
-    //         .setText('CLICKUP')
-    //         .setOpenLink(CardService.newOpenLink().setUrl(CLICKUP_URL))
-    // )
+    .setSecondaryButton(
+        CardService.newTextButton()
+            .setText('NEXUDUS')
+            .setOpenLink(CardService.newOpenLink().setUrl(NEXUDUS_LOCAL_WEBSITE))
+    )
 
 const cardWithNotification = (e, targetCard, text = 'ERROR_MSG') => CardService.newActionResponseBuilder()
     .setNotification(CardService.newNotification().setText(text))
