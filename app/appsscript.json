@@ -25,8 +25,8 @@
   "runtimeVersion": "V8",
   "addOns": {
     "common": {
-      "name": "Room Booking",
-      "logoUrl": "https://github.com/podymniak/podymniak.github.io/blob/main/images/_teaBreakColorInverted.png?raw=true",
+      "name": "Room Booking DEV",
+      "logoUrl": "https://github.com/podymniak/podymniak.github.io/blob/main/images/_teaBreakColorInvertedBlack.png?raw=true",
       "useLocaleFromApp": true,
       "homepageTrigger": {
         "runFunction": "onHomepage",
