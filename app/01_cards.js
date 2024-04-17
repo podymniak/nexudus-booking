@@ -50,7 +50,7 @@ const homePageCard = e => {
         }
 
         const addSlotsButton = CardService.newTextButton()
-            .setText('Make usable slots')
+            .setText('Make into usable slots')
             // .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
             .setOnClickAction(
                 CardService.newAction().setFunctionName('saveBookings')
@@ -99,7 +99,7 @@ const eventCard = (event) => {
 
     /** Unrecognized event */
     card.addSection(CardService.newCardSection().addWidget(
-            CardService.newTextParagraph().setText('Unrecognized event')
+            CardService.newTextParagraph().setText('This event must be saved to your calendar before you can book a room.')
         )
     )
 
@@ -117,7 +117,9 @@ const availableBookingsWidget = () => {
 
 const mapButton = () => CardService.newTextButton()
     .setText('Office map')
-    .setOpenLink(CardService.newOpenLink().setUrl(OFFICE_MAP))
+    .setOpenLink(CardService.newOpenLink()
+        .setUrl(OFFICE_MAP)
+        .setOpenAs(CardService.OpenAs.OVERLAY))
 
 
 const bookingStatusSection = (eventProps) => {
@@ -162,7 +164,7 @@ const availableResourcesSection = (event) => {
     }
 
     const bookButton = CardService.newTextButton()
-        .setText('Book room')
+        .setText('Book a room')
         .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
         .setOnClickAction(
             CardService.newAction().setFunctionName('bookResource')
@@ -184,7 +186,7 @@ const noPasswordCard = e => {
                 CardService.newTextInput()
                     .setFieldName('password')
                     .setTitle('Password to your Nexudus account:')
-                    .setHint('WARNING! IT WILL BE VISIBLE WHEN TYPING')
+                    .setHint('WARNING! YOUR PASSWORD WILL BE VISIBLE WHEN TYPING')
                     .setOnChangeAction(CardService.newAction()
                         .setLoadIndicator(CardService.LoadIndicator.SPINNER)
                         .setFunctionName('setPasswordFromInput')
@@ -206,7 +208,8 @@ const getHeader = (
 const getFooter = () => CardService.newFixedFooter()
     .setPrimaryButton(
         CardService.newTextButton()
-            .setText('SHARE THE LOVE')
+            // .setText('SHARE THE LOVE')
+            .setText('SHARE')
             .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
             .setOpenLink(CardService.newOpenLink().setUrl(PRIMARY_BUTTON_LINK))
     )

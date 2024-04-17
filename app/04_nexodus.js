@@ -12,7 +12,7 @@ function listMyFutureBookings() {
     const accessToken = getToken()
 
     if (accessToken.error) {
-        console.log(accessToken.error)
+        // console.log(accessToken.error)
         return {error: accessToken.error}
     }
 
@@ -81,7 +81,7 @@ const updateBooking = (resource, startTime, endTime, bookingId) => {
     const accessToken = getToken()
 
     if (accessToken.error) {
-        console.log(accessToken.error)
+        // console.log(accessToken.error)
         return {error: accessToken.error}
     }
     // console.log(resource, startTime, endTime, bookingId)
@@ -107,7 +107,7 @@ const updateBooking = (resource, startTime, endTime, bookingId) => {
                 }
             })
         })
-    console.log(response.getContentText())
+    // console.log(response.getContentText())
     const result = JSON.parse(response.getContentText())
     //{"Status":200,"Message":"Your booking has been updated","Value":null,"OpenInDialog":false,"OpenInWindow":false,"RedirectURL":null,"JavaScript":null,"UpdatedOn":null,"UpdatedBy":null,"Errors":null,"WasSuccessful":true}
     return {
@@ -149,7 +149,7 @@ const getBookingCalendar = (
 
     const eventStartTime = new Date(startTime)
     const eventEndTime = new Date(endTime)
-    console.log(`${eventStartTime}\n${eventEndTime}`)
+    // console.log(`${eventStartTime}\n${eventEndTime}`)
 
     for (let i in bookings) {
         const resourceStartTime = fixTimezone(bookings[i].start) // 2024-04-14T22:00Z
@@ -158,7 +158,7 @@ const getBookingCalendar = (
         // console.log(`${resourceStartTime}\n${resourceEndTime}`)
 
         if (resourceEndTime > eventStartTime && resourceStartTime < eventEndTime) {
-            console.log(`${bookings[i].title}, start: ${resourceStartTime}, end: ${resourceEndTime}`, bookings[i].id)
+            // console.log(`${bookings[i].title}, start: ${resourceStartTime}, end: ${resourceEndTime}`, bookings[i].id)
             delete resources[bookings[i].title]
         }
     }

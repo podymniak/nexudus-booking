@@ -10,7 +10,7 @@ const deleteUserProps = () => PropertiesService.getUserProperties().deleteAllPro
 // const deleteAccessToken = () => PropertiesService.getUserProperties().deleteProperty(ACCESS_TOKEN_NAME)
 // const setRefreshToken = (value) => PropertiesService.getUserProperties().setProperty(REFRESH_TOKEN_NAME, value)
 // const getRefreshToken = () => PropertiesService.getUserProperties().getProperty(REFRESH_TOKEN_NAME)
-// const test = () => console.log(getToken())
+
 
 const setPasswordFromInput = (e) => {
     const password = e.formInput.password
@@ -20,9 +20,12 @@ const setPasswordFromInput = (e) => {
         setPassword(password)
     }
 
+    const message = passwordTest.error || 'Password set :)'
+
+    Logger.log({function: 'setPasswordFromInput', error: !!passwordTest.error, message: message, user: USER_EMAIL})
     return cardWithNotification(e,
         e.calendar.id ? onCalendarEventOpen : passwordTest.error ? noPasswordCard : onHomepage,
-        passwordTest.error || 'Password set correctly'
+        message
     )
 }
 
@@ -36,7 +39,7 @@ const getToken = (password = getPassword()) => {
     let accessToken = getAccessToken()
 
     if (accessToken) {
-        console.log('access token exists')
+        // Logger.log('access token exists')
         return accessToken
     }
 
@@ -67,11 +70,12 @@ const getToken = (password = getPassword()) => {
 
         accessToken = JSON.parse(response.getContentText()).access_token
         setAccessToken(accessToken)
-        console.log('new access token generated')
+        // Logger.log('new access token generated')
         return accessToken
 
     } catch (e) {
         deleteUserProps()
+        Logger.log({function: 'getToken', error: true, message: e, user: USER_EMAIL})
         // getToken()
         return {error: e}
     }

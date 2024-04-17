@@ -7,15 +7,14 @@ const setBookedBookings = (list) => PropertiesService.getUserProperties().setPro
 const getSavedBookings = () => stringToList(PropertiesService.getUserProperties().getProperty(SAVED_BOOKINGS_NAME))
 const getBookedBookings = () => stringToList(PropertiesService.getUserProperties().getProperty(BOOKED_BOOKINGS_NAME))
 const getAvailableBookings = () => getSavedBookings().filter(item => !getBookedBookings().includes(item))
-// const deleteBookingsProp = () => PropertiesService.getUserProperties().deleteProperty(BOOKINGS_NAME)
 
 
 /** Booking properties */
 const removeFromBookedBookings = (list) => {
     const bookedBookings = getBookedBookings()
     const newBookedBookings = bookedBookings.filter(item => !list.includes(item))
-    console.log(bookedBookings)
-    console.log(newBookedBookings)
+    // console.log(bookedBookings)
+    // console.log(newBookedBookings)
     setBookedBookings(newBookedBookings)
 }
 
@@ -23,8 +22,8 @@ const addToBookedBookings = (list) => {
     const bookedBookings = getBookedBookings()
     const combinedBookings = bookedBookings.concat(list)
     const newBookedBookings = [...new Set(combinedBookings)]
-    console.log(bookedBookings)
-    console.log(newBookedBookings)
+    // console.log(bookedBookings)
+    // console.log(newBookedBookings)
     setBookedBookings(newBookedBookings)
 }
 

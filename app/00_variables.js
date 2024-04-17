@@ -8,9 +8,9 @@ const EXCLUDED_RESOURCES = [1415077508]
 const PRIMARY_CALENDAR = 'primary'
 
 /** URLs */
-const PRIMARY_BUTTON_LINK = 'https://github.com/podymniak/nexudus-booking'
+const PRIMARY_BUTTON_LINK = 'https://workspace.google.com/marketplace/app/room_booking/375198058937'
 const NEXUDUS_LOCAL_WEBSITE = 'https://warszawalixa.spaces.nexudus.com/bookings/calendar'
-const OFFICE_MAP = "https://drive.google.com/file/d/1sa43ivNQgQx3TcLhCuaUXkOYzPCyajzV/view"
+const OFFICE_MAP = "https://drive.google.com/file/d/1sa43ivNQgQx3TcLhCuaUXkOYzPCyajzV/preview"
 
 /** Script/user properties' names */
 const VIP_USERS = 'VIP_USERS'
@@ -21,6 +21,6 @@ const ACCESS_TOKEN_NAME = 'ACCESS_TOKEN'
 const PASSWORD_NAME = 'PASSWORD'
 
 /** Special VIP section */
-const setVIPs = (value) => PropertiesService.getUserProperties().setProperty(VIP_USERS, 'comma,separated.emails')
+const setVIPs = (value='comma,separated.emails') => PropertiesService.getUserProperties().setProperty(VIP_USERS, value)
 const VIPS = (PropertiesService.getUserProperties().getProperty(VIP_USERS) || '').split(',')
 const MAX_SLOTS = VIPS.includes(USER_EMAIL) ? 10 : 3

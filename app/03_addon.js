@@ -7,13 +7,13 @@ const saveBookings = (e) => {
     const selectedSlots = e.formInputs.free_slots
 
     if (!selectedSlots) {
-        return cardWithNotification(e, onHomepage, 'No slots were selected')
+        return cardWithNotification(e, onHomepage, 'No bookings were selected')
     }
 
     addToSavedBookedBookings(selectedSlots)
     removeFromBookedBookings(selectedSlots)
 
-    return cardWithNotification(e, onHomepage, 'Slots saved :)')
+    return cardWithNotification(e, onHomepage, 'Bookings saved and ready to use :)')
 }
 
 
@@ -40,7 +40,8 @@ const bookResource = (e) => {
     updateCalendarEvent(event)
     addToBookedBookings([bookingId])
 
-    console.log(event.extendedProperties)
-    return cardWithNotification(e, onCalendarEventOpen, `${result.message} :)`)
+    // console.log(event.extendedProperties)
+    Logger.log({function: 'bookResource', error: result.error, message: result.message, user: USER_EMAIL})
+    return cardWithNotification(e, onCalendarEventOpen, `Boom has been booked :)`)
 }
 
