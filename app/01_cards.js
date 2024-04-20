@@ -62,7 +62,7 @@ const homePageCard = e => {
 
     const explanation = CardService.newTextParagraph().setText(
         `▶️ Public API doesn't allow creating<br>new bookings, so we need to use<br>existing ones. 
-      <b>1.</b> Create dummy bookings in <a href=${NEXUDUS_LOCAL_WEBSITE}>Nexudus</a> (outside of working hours). Up to ${MAX_SLOTS}<br>slots are available.
+      <b>1.</b> Create dummy bookings in <a href=${NEXUDUS_CALENDAR}>Nexudus</a> (outside of working hours). Up to ${MAX_SLOTS}<br>slots are available.
       <b>2.</b> Refresh addon, choose your dummy bookings and press the button.<br>
       ☑️ Now you can book rooms from<br>your calendar! Your slots will reset<br>after each meeting, so no need to<br>repeat these steps.`
     )
@@ -129,13 +129,18 @@ const bookingStatusSection = (eventProps) => {
         return section.addWidget(CardService.newTextParagraph().setText(`No room booked.`))
     }
 
-    return section.addWidget(CardService.newTextParagraph()
-        .setText(`<b>${eventProps.resourceName}</b>
+    return section
+        .addWidget(CardService.newTextParagraph()
+            .setText(`<b>${eventProps.resourceName}</b>
       ${eventProps.startTime.replace("T", " at ").split('+')[0]} - start
       ${eventProps.endTime.replace("T", " at ").split('+')[0]} - end
       `))
+        .addWidget(CardService.newTextButton()
+            .setText('See my bookings')
+            .setOpenLink(CardService.newOpenLink()
+                // .setUrl(`${NEXUDUS_LOCAL_WEBSITE}/profile/bookings?booking_id=${eventProps.bookingId}`))) // nie robotaje ;(
+                .setUrl(`${NEXUDUS_LOCAL_WEBSITE}/profile/bookings`)))
 }
-
 
 const availableResourcesSection = (event) => {
     const section = CardService.newCardSection().addWidget(availableBookingsWidget())
@@ -216,7 +221,7 @@ const getFooter = () => CardService.newFixedFooter()
     .setSecondaryButton(
         CardService.newTextButton()
             .setText('NEXUDUS')
-            .setOpenLink(CardService.newOpenLink().setUrl(NEXUDUS_LOCAL_WEBSITE))
+            .setOpenLink(CardService.newOpenLink().setUrl(NEXUDUS_CALENDAR))
     )
 
 const cardWithNotification = (e, targetCard, text = 'ERROR_MSG') => CardService.newActionResponseBuilder()

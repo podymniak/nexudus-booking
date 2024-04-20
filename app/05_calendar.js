@@ -12,6 +12,7 @@ const readBookingIdPropertiesFromEvent = (event) => event.extendedProperties?.pr
 const readExtendedPropertiesFromEvent = (event) => {
     const extProps = event.extendedProperties
     return {
+        bookingId: extProps?.private?.bookingId || extProps?.shared?.bookingId,
         resourceId: extProps?.private?.resourceId || extProps?.shared?.resourceId,
         resourceName: extProps?.private?.resourceName || extProps?.shared?.resourceName,
         startTime: extProps?.private?.startTime || extProps?.shared?.startTime,

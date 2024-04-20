@@ -9,7 +9,8 @@ const PRIMARY_CALENDAR = 'primary'
 
 /** URLs */
 const PRIMARY_BUTTON_LINK = 'https://workspace.google.com/marketplace/app/room_booking/375198058937'
-const NEXUDUS_LOCAL_WEBSITE = 'https://warszawalixa.spaces.nexudus.com/bookings/calendar'
+const NEXUDUS_LOCAL_WEBSITE = 'https://warszawalixa.spaces.nexudus.com'
+const NEXUDUS_CALENDAR = `${NEXUDUS_LOCAL_WEBSITE}/bookings/calendar`
 const OFFICE_MAP = "https://drive.google.com/file/d/1sa43ivNQgQx3TcLhCuaUXkOYzPCyajzV/preview"
 
 /** Script/user properties' names */
