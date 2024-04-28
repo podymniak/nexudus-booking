@@ -42,6 +42,6 @@ const bookResource = (e) => {
 
     // console.log(event.extendedProperties)
     Logger.log({function: 'bookResource', error: result.error, message: result.message, user: USER_EMAIL})
-    return cardWithNotification(e, onCalendarEventOpen, `Boom has been booked :)`)
+    return cardWithNotification(e, onCalendarEventOpen, `Room has been booked :)`)
 }
 
