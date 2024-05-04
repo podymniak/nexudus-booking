@@ -16,17 +16,7 @@ function listMyFutureBookings() {
         return {error: accessToken.error}
     }
 
-    const response = UrlFetchApp.fetch(
-        `${API_ENDPOINT}/bookings/my?_depth=3`,
-        {
-            method: 'POST',
-            headers: {
-                accept: 'application/json',
-                'Content-Type': 'application/json',
-                authorization: `Bearer ${accessToken}`
-            }
-        }
-    )
+    const response = listBookingsRequest(accessToken)
     const myBookings = JSON.parse(response.getContentText()).MyBookings
 
     const myFutureBookings = {}
@@ -46,6 +36,20 @@ function listMyFutureBookings() {
 
     // console.log(JSON.stringify(myFutureBookings, " ", 4))
     return myFutureBookings
+}
+
+const listBookingsRequest = (accessToken) => {
+    return UrlFetchApp.fetch(
+        `${API_ENDPOINT}/bookings/my?_depth=3`,
+        {
+            method: 'POST',
+            headers: {
+                accept: 'application/json',
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${accessToken}`
+            }
+        }
+    )
 }
 
 /**

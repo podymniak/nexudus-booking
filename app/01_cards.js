@@ -30,7 +30,10 @@ const homePageCard = e => {
     const section = CardService.newCardSection()
         .addWidget(availableBookingsWidget())
 
-    if (myFutureBookings.length === 0) {
+    Logger.log('myFutureBookings', myFutureBookings, myFutureBookings.length)
+
+
+    if (myFutureBookings) {
         section.addWidget(CardService.newTextParagraph().setText('No future bookings'))
     } else {
         const myFutureBookingsWidget = CardService.newSelectionInput()
@@ -102,7 +105,6 @@ const eventCard = (event) => {
             CardService.newTextParagraph().setText('This event must be saved to your calendar before you can book a room.')
         )
     )
-
     return card.build()
 }
 
@@ -195,7 +197,10 @@ const noPasswordCard = e => {
                     .setOnChangeAction(CardService.newAction()
                         .setLoadIndicator(CardService.LoadIndicator.SPINNER)
                         .setFunctionName('setPasswordFromInput')
-                    ))).build()
+                    ))
+                .addWidget(CardService.newTextParagraph().setText(
+                    'If you don\'t remember your password, try pasting this into your Chrome browser::<br><br><i>chrome://password-manager/passwords?q=nexudus</i>'))
+        ).build()
 }
 
 

@@ -7,7 +7,7 @@ const getPassword = () => PropertiesService.getUserProperties().getProperty(PASS
 const setAccessToken = (value) => PropertiesService.getUserProperties().setProperty(ACCESS_TOKEN_NAME, value)
 const getAccessToken = () => PropertiesService.getUserProperties().getProperty(ACCESS_TOKEN_NAME)
 const deleteUserProps = () => PropertiesService.getUserProperties().deleteAllProperties()
-// const deleteAccessToken = () => PropertiesService.getUserProperties().deleteProperty(ACCESS_TOKEN_NAME)
+const deleteAccessToken = () => PropertiesService.getUserProperties().deleteProperty(ACCESS_TOKEN_NAME)
 // const setRefreshToken = (value) => PropertiesService.getUserProperties().setProperty(REFRESH_TOKEN_NAME, value)
 // const getRefreshToken = () => PropertiesService.getUserProperties().getProperty(REFRESH_TOKEN_NAME)
 
@@ -35,11 +35,12 @@ const setPasswordFromInput = (e) => {
  * If access token in user properties - refresh token
  * return access token (or null if error) TODO: function to reset password (?)
  */
-const getToken = (password = getPassword()) => {
+const getToken = (password = getPassword(), attempt = 0) => {
     let accessToken = getAccessToken()
 
     if (accessToken) {
         // Logger.log('access token exists')
+        testToken(accessToken, password)
         return accessToken
     }
 
@@ -74,12 +75,20 @@ const getToken = (password = getPassword()) => {
         return accessToken
 
     } catch (e) {
-        deleteUserProps()
+        // deleteUserProps()
         Logger.log({function: 'getToken', error: true, message: e, user: USER_EMAIL})
         // getToken()
         return {error: e}
     }
 }
 
-
+const testToken = (accessToken, password) => {
+    try {
+        listBookingsRequest(accessToken)
+    } catch (error) {
+        Logger.log(`Access error: ${error}`)
+        deleteAccessToken()
+        getToken(password, 1)
+    }
+}
 
