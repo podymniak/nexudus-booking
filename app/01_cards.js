@@ -30,21 +30,21 @@ const homePageCard = e => {
     const section = CardService.newCardSection()
         .addWidget(availableBookingsWidget())
 
-    Logger.log('myFutureBookings', myFutureBookings, myFutureBookings.length)
+    // Logger.log('myFutureBookings', myFutureBookings, myFutureBookings.length)
 
+    const myFutureBookingsWidget = CardService.newSelectionInput()
+        .setFieldName('free_slots')
+        .setTitle('Future bookings:')
+        .setType(CardService.SelectionInputType.CHECK_BOX)
 
-    if (myFutureBookings) {
+    const myFutureBookingsList = []
+    for (let bookingId in myFutureBookings) {
+        myFutureBookingsList.push([myFutureBookings[bookingId], bookingId])
+    }
+
+    if (myFutureBookingsList.length===0) {
         section.addWidget(CardService.newTextParagraph().setText('No future bookings'))
     } else {
-        const myFutureBookingsWidget = CardService.newSelectionInput()
-            .setFieldName('free_slots')
-            .setTitle('Future bookings:')
-            .setType(CardService.SelectionInputType.CHECK_BOX)
-
-        const myFutureBookingsList = []
-        for (let bookingId in myFutureBookings) {
-            myFutureBookingsList.push([myFutureBookings[bookingId], bookingId])
-        }
         myFutureBookingsList.sort()
 
         for (let i in myFutureBookingsList) {
