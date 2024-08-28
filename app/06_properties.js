@@ -8,6 +8,7 @@ const getSavedBookings = () => stringToList(PropertiesService.getUserProperties(
 const getBookedBookings = () => stringToList(PropertiesService.getUserProperties().getProperty(BOOKED_BOOKINGS_NAME))
 const getAvailableBookings = () => getSavedBookings().filter(item => !getBookedBookings().includes(item))
 
+// const check = () => console.log(getSavedBookings()) // 1430752004
 
 /** Booking properties */
 const removeFromBookedBookings = (list) => {
@@ -48,6 +49,20 @@ const checkBookingProperties = () => {
     console.log(getBookedBookings())
     console.log(getAvailableBookings())
 }
+
+/** Coworker ID */
+const setCoworkerIdProperty = () => {
+    const id = getCoworkerId()
+    if (!id.error) {
+        PropertiesService.getUserProperties().setProperty(COWORKER_ID_NAME, id)
+    }
+    return id
+}
+const getCoworkerIdProperty = () => {
+      const id = PropertiesService.getUserProperties().getProperty(COWORKER_ID_NAME)
+      return id ? id : setCoworkerIdProperty()
+  }
+
 
 /** Helpers */
 const stringToList = (string) => {

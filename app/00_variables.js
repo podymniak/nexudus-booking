@@ -2,7 +2,7 @@ const USER_EMAIL = Session.getEffectiveUser().getEmail()
 
 /** Nexudus API variables */
 const API_ENDPOINT = 'https://warszawalixa.spaces.nexudus.com/en'
-const EXCLUDED_RESOURCES = [1415077508]
+const EXCLUDED_RESOURCES = [1415077508,1415074972,1415074973]
 
 /** Google Calendar variables */
 const PRIMARY_CALENDAR = 'primary'
@@ -20,8 +20,9 @@ const BOOKED_BOOKINGS_NAME = 'BOOKED_BOOKINGS'
 // const REFRESH_TOKEN_NAME = 'REFRESH_TOKEN'
 const ACCESS_TOKEN_NAME = 'ACCESS_TOKEN'
 const PASSWORD_NAME = 'PASSWORD'
+const COWORKER_ID_NAME = 'COWORKER_ID'
 
 /** Special VIP section */
 const setVIPs = (value='comma,separated.emails') => PropertiesService.getUserProperties().setProperty(VIP_USERS, value)
 const VIPS = (PropertiesService.getUserProperties().getProperty(VIP_USERS) || '').split(',')
-const MAX_SLOTS = VIPS.includes(USER_EMAIL) ? 10 : 3
+const MAX_SLOTS = VIPS.includes(USER_EMAIL) ? 10 : 5

@@ -155,13 +155,15 @@ const getBookingCalendar = (
     const eventEndTime = new Date(endTime)
     // console.log(`${eventStartTime}\n${eventEndTime}`)
 
+    const coworkerId = getCoworkerIdProperty()
+
     for (let i in bookings) {
         const resourceStartTime = fixTimezone(bookings[i].start) // 2024-04-14T22:00Z
         const resourceEndTime = fixTimezone(bookings[i].end)
 
         // console.log(`${resourceStartTime}\n${resourceEndTime}`)
 
-        if (resourceEndTime > eventStartTime && resourceStartTime < eventEndTime) {
+        if (resourceEndTime > eventStartTime && resourceStartTime < eventEndTime && bookings[i].coworkerId!==coworkerId) {
             // console.log(`${bookings[i].title}, start: ${resourceStartTime}, end: ${resourceEndTime}`, bookings[i].id)
             delete resources[bookings[i].title]
         }
@@ -169,6 +171,32 @@ const getBookingCalendar = (
     // console.log(resources)
     return resources
 }
+
+
+const getCoworkerId = () => {
+      const accessToken = getToken()
+
+    if (accessToken.error) {
+        return {error: accessToken.error}
+    }
+
+      response = UrlFetchApp.fetch(
+        `${API_ENDPOINT}/profile?_resource=Coworker`,
+        {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${accessToken}`
+            }
+        }
+    )
+
+    const coworker = JSON.parse(response.getContentText())
+    // console.log(coworker.Id)
+    return coworker.Id
+}
+
 
 /**
  * Nexudus saves events in local time - eg '2024-04-14T22:00Z' - but for Google Calendar this looks like GMT

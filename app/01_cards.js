@@ -91,6 +91,15 @@ const eventCard = (event) => {
         .setHeader(getHeader())
         .setFixedFooter(getFooter())
 
+    /** Exclude events in the past */
+    if (new Date(event?.end?.dateTime) < new Date()) {
+        card.addSection(CardService.newCardSection().addWidget(
+        CardService.newTextParagraph().setText("This event is in the past. You can't book a room for that time.")
+      )
+        )
+        return card.build()
+    }
+
     /** Existing event (excludes all day events (TODO exclude OOO)) */
     if (event?.start?.dateTime) {
         // console.log(event)
@@ -225,7 +234,7 @@ const getFooter = () => CardService.newFixedFooter()
     )
     .setSecondaryButton(
         CardService.newTextButton()
-            .setText('NEXUDUS')
+            .setText('LOFTMILL')
             .setOpenLink(CardService.newOpenLink().setUrl(NEXUDUS_CALENDAR))
     )
 
