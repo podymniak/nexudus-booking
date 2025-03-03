@@ -72,7 +72,7 @@ const homePageCard = e => {
 
     const explanation = CardService.newTextParagraph().setText(
         `▶️ Public API doesn't allow creating<br>new bookings, so we need to use<br>existing ones. 
-      <b>1.</b> Create dummy 30 mins bookings in <a href=${NEXUDUS_CALENDAR}>Nexudus</a> (outside of working hours). Up to ${MAX_SLOTS} slots are available.
+      <b>1.</b> Create dummy 60 mins bookings in <a href=${NEXUDUS_CALENDAR}>Nexudus</a> (outside of working hours). Up to ${MAX_SLOTS} slots are available.
       <b>2.</b> Refresh addon, choose your dummy bookings and press the button.<br>
       ☑️ Now you can book rooms from<br>your calendar! Your slots will reset<br>after each meeting, so no need to<br>repeat these steps.`
     )
