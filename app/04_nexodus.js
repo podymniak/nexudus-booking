@@ -89,6 +89,7 @@ const updateBooking = (resource, startTime, endTime, bookingId) => {
         return {error: accessToken.error}
     }
     // console.log(resource, startTime, endTime, bookingId)
+    // console.log('startTime', startTime, typeof(startTime))
 
     const response = UrlFetchApp.fetch(
         `${API_ENDPOINT}/bookings/bookingJson`,
@@ -103,7 +104,8 @@ const updateBooking = (resource, startTime, endTime, bookingId) => {
                 booking: {
                     ResourceId: resource,
                     FromTime: startTime.split('+')[0], // TODO better format fix
-                    ToTime: endTime.split('+')[0],
+                    // ToTime: endTime.split('+')[0],
+                    ToTime: endTime,
                     Id: bookingId,
                     resource: {
                         Id: resource

@@ -8,6 +8,11 @@ const getSavedBookings = () => stringToList(PropertiesService.getUserProperties(
 const getBookedBookings = () => stringToList(PropertiesService.getUserProperties().getProperty(BOOKED_BOOKINGS_NAME))
 const getAvailableBookings = () => getSavedBookings().filter(item => !getBookedBookings().includes(item))
 
+const deleteSavedBookingsFromProperties = () => {
+    PropertiesService.getUserProperties().deleteProperty(SAVED_BOOKINGS_NAME)
+    PropertiesService.getUserProperties().deleteProperty(BOOKED_BOOKINGS_NAME)
+}
+
 // const check = () => console.log(getSavedBookings()) // 1430752004
 
 /** Booking properties */

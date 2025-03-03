@@ -30,13 +30,21 @@ const bookResource = (e) => {
     const event = getCalendarEvent(e.calendar.id)
     const bookingId = readBookingIdPropertiesFromEvent(event) || getAvailableBookings()[0]
 
-    const result = updateBooking(resourceId, event.start.dateTime, event.end.dateTime, bookingId)
+    // TODO FIX END DATE
+    const startTime = event.start.dateTime
+    // const endTime = event.end.dateTime
+    const date = new Date(startTime)
+    date.setHours(date.getHours() + 1)
+    const endTime = Utilities.formatDate(date, Session.getScriptTimeZone(), 'yyyy-MM-dd\'T\'HH:mm:ss')
+
+
+    const result = updateBooking(resourceId, startTime, endTime, bookingId)
 
     if (result.error) {
         return cardWithNotification(e, onCalendarEventOpen, `ERROR: ${result.message}`)
     }
 
-    writeExtendedPropertiesToEvent(event, bookingId, resourceId, resourceName, event.start.dateTime, event.end.dateTime)
+    writeExtendedPropertiesToEvent(event, bookingId, resourceId, resourceName, startTime, endTime)
     updateCalendarEvent(event)
     addToBookedBookings([bookingId])
 
