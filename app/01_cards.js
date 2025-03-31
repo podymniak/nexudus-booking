@@ -28,6 +28,9 @@ const homePageCard = e => {
     updatedBookedBookings(myFutureBookings)
 
     const section = CardService.newCardSection()
+        .setHeader('📖 Bookings')
+        .setCollapsible(true)
+        .setNumUncollapsibleWidgets(2)
         .addWidget(availableBookingsWidget())
 
     // Logger.log('myFutureBookings', myFutureBookings, myFutureBookings.length)
@@ -52,38 +55,58 @@ const homePageCard = e => {
                 .addItem(myFutureBookingsList[i][0], myFutureBookingsList[i][1], false)
         }
 
-        const addSlotsButton = CardService.newTextButton()
-            .setText('Make into usable slots')
-            // .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
-            .setOnClickAction(
-                CardService.newAction().setFunctionName('saveBookings')
-            )
-
-        const deleteStotsButton = CardService.newTextButton()
-            .setText('Delete usable slots')
-            .setOnClickAction(
-                CardService.newAction().setFunctionName('deleteSavedBookingsFromProperties')
-            )
-
         section.addWidget(myFutureBookingsWidget)
-        section.addWidget(addSlotsButton)
-        section.addWidget(deleteStotsButton)
     }
 
     const explanation = CardService.newTextParagraph().setText(
-        `▶️ Public API doesn't allow creating<br>new bookings, so we need to use<br>existing ones. 
-      <b>1.</b> Create dummy 60 mins bookings in <a href=${NEXUDUS_CALENDAR}>Nexudus</a> (outside of working hours). Up to ${MAX_SLOTS} slots are available.
-      <b>2.</b> Refresh addon, choose your dummy bookings and press the button.<br>
-      ☑️ Now you can book rooms from<br>your calendar! Your slots will reset<br>after each meeting, so no need to<br>repeat these steps.`
+        // `▶️ Public API doesn't allow creating<br>new bookings, so we need to use<br>existing ones. 
+      `<br><b>INSTRUCTION:</b><br>` +
+      `<b>1.</b> Create dummy 60 mins bookings in <a href=${NEXUDUS_CALENDAR}>Nexudus</a> (up to ${MAX_SLOTS})<br>` +
+      `<b>2.</b> Refresh addon<br>` + 
+      `<b>3.</b> Select your dummy bookings<br>` +
+      `<b>4.</b> Press the "Make into usable slots" button.<br>`
+      // + `☑️ Now you can book rooms from<br>your calendar! Your slots will reset<br>after each meeting, so no need to<br>repeat these steps.`
     )
 
+    const addSlotsButton = CardService.newTextButton()
+        .setText('Make into usable slots')
+        // .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
+        .setOnClickAction(
+            CardService.newAction().setFunctionName('saveBookings')
+        )
+
+
+    const deleteStotsButton = CardService.newTextButton()
+        .setText('Delete usable slots')
+        .setOnClickAction(
+            CardService.newAction().setFunctionName('deleteSavedBookingsFromProperties')
+        )
+
+    // section.addWidget(CardService.newDivider())
+
     section.addWidget(explanation)
-    section.addWidget(mapButton())
+    section.addWidget(addSlotsButton)
+    section.addWidget(deleteStotsButton)
+
+    // section.addWidget(CardService.newDivider())
+    // section.addWidget(mapButton())
+
+    const mapImage = CardService.newImage()
+                  .setAltText('Office map')
+                  .setImageUrl(OFFICE_MINI_MAP)
+                  .setOpenLink( CardService.newOpenLink()
+                           .setUrl(OFFICE_MAP)
+                           .setOpenAs(CardService.OpenAs.OVERLAY)
+                          //  .setOnClose(CardService.OnClose.RELOAD)
+                           )
+    const sectionMap = CardService.newCardSection().setHeader('🗺️ Office map')
+        .addWidget(mapImage)
 
     return CardService.newCardBuilder()
         .setHeader(getHeader())
         .setFixedFooter(getFooter())
         .addSection(section)
+        .addSection(sectionMap)
         .build()
 }
 
@@ -168,9 +191,14 @@ const availableResourcesSection = (event) => {
         return section
     }
 
-    // const availableResources = searchAvailableResources(event.start.dateTime, event.end.dateTime)
-    // const availableResources = findAvailableResources(event.start.dateTime, event.end.dateTime)
-    const availableResources = getBookingCalendar(event.start.dateTime, event.end.dateTime)
+    // TODO FIX END DATE
+    const startTime = event.start.dateTime
+    // const endTime = event.end.dateTime
+    const endTime = tempEndTime(startTime)
+
+    // const availableResources = searchAvailableResources(startTime, endTime)
+    // const availableResources = findAvailableResources(startTime, endTime)
+    const availableResources = getBookingCalendar(startTime, endTime)
 
     if (availableResources.length === 0) {
         return section.addWidget(CardService.newTextParagraph().setText('No available rooms on that time'))

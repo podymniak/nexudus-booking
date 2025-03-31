@@ -12,6 +12,8 @@ const PRIMARY_BUTTON_LINK = 'https://workspace.google.com/marketplace/app/room_b
 const NEXUDUS_LOCAL_WEBSITE = 'https://warszawalixa.spaces.nexudus.com'
 const NEXUDUS_CALENDAR = `${NEXUDUS_LOCAL_WEBSITE}/bookings/calendar`
 const OFFICE_MAP = "https://drive.google.com/file/d/1sa43ivNQgQx3TcLhCuaUXkOYzPCyajzV/preview"
+const OFFICE_MINI_MAP = "https://github.com/podymniak/nexudus-booking/blob/main/Mapa_pokoi_mala.png?raw=true"
+// Mini map must be in a small resolution and publicly available
 
 /** Script/user properties' names */
 const VIP_USERS = 'VIP_USERS'

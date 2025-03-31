@@ -7,7 +7,7 @@ const saveBookings = (e) => {
     const selectedSlots = e.formInputs.free_slots
 
     if (!selectedSlots) {
-        return cardWithNotification(e, onHomepage, 'No bookings were selected')
+        return cardWithNotification(e, onHomepage, 'No bookings selected')
     }
 
     addToSavedBookedBookings(selectedSlots)
@@ -33,10 +33,7 @@ const bookResource = (e) => {
     // TODO FIX END DATE
     const startTime = event.start.dateTime
     // const endTime = event.end.dateTime
-    const date = new Date(startTime)
-    date.setHours(date.getHours() + 1)
-    const endTime = Utilities.formatDate(date, Session.getScriptTimeZone(), 'yyyy-MM-dd\'T\'HH:mm:ss')
-
+    const endTime = tempEndTime(startTime)
 
     const result = updateBooking(resourceId, startTime, endTime, bookingId)
 
