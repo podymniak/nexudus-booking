@@ -51,13 +51,13 @@ const writeExtendedPropertiesToEvent = (event, bookingId, resourceId, resourceNa
     return event
 }
 
-const deleteAllExtendedPropertiesFromEvent = (event) => delete event.extendedProperties
+// const deleteAllExtendedPropertiesFromEvent = (event) => delete event.extendedProperties
 
-const tempEndTime = (startTime) => {
-    const date = new Date(startTime)
-    date.setHours(date.getHours() + 1)
-    return Utilities.formatDate(date, Session.getScriptTimeZone(), 'yyyy-MM-dd\'T\'HH:mm:ss')
-}
+// const tempEndTime = (startTime) => {
+//     const date = new Date(startTime)
+//     date.setHours(date.getHours() + 1)
+//     return Utilities.formatDate(date, Session.getScriptTimeZone(), 'yyyy-MM-dd\'T\'HH:mm:ss')
+// }
 
 // const searchAvailabilityByCalendar = (
 //   startTime='2024-04-11T09:30:00+02:00',

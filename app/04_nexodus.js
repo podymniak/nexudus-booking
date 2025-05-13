@@ -9,14 +9,7 @@
  * https://developers.nexudus.com/reference/delete-bookings-1
  */
 function listMyFutureBookings() {
-    const accessToken = getToken()
-
-    if (accessToken.error) {
-        // console.log(accessToken.error)
-        return {error: accessToken.error}
-    }
-
-    const response = listBookingsRequest(accessToken)
+    const response = listBookingsRequest()
     const myBookings = JSON.parse(response.getContentText()).MyBookings
 
     const myFutureBookings = {}
@@ -38,7 +31,11 @@ function listMyFutureBookings() {
     return myFutureBookings
 }
 
-const listBookingsRequest = (accessToken) => {
+const listBookingsRequest = (accessToken=getToken()) => {
+    if (accessToken.error) {
+        return {error: accessToken.error}
+    }
+
     return UrlFetchApp.fetch(
         `${API_ENDPOINT}/bookings/my?_depth=3`,
         {
@@ -91,6 +88,21 @@ const updateBooking = (resource, startTime, endTime, bookingId) => {
     // console.log(resource, startTime, endTime, bookingId)
     // console.log('startTime', startTime, typeof(startTime))
 
+    console.log(JSON.stringify({
+        booking: {
+            ResourceId: resource,
+            FromTime: startTime.split('+')[0], // TODO better format fix
+            ToTime: endTime.split('+')[0],
+            // ToTime: endTime,
+            Id: bookingId,
+            resource: {
+                Id: resource
+            }
+        }
+    }))
+
+
+
     const response = UrlFetchApp.fetch(
         `${API_ENDPOINT}/bookings/bookingJson`,
         {
@@ -104,8 +116,8 @@ const updateBooking = (resource, startTime, endTime, bookingId) => {
                 booking: {
                     ResourceId: resource,
                     FromTime: startTime.split('+')[0], // TODO better format fix
-                    // ToTime: endTime.split('+')[0],
-                    ToTime: endTime,
+                    ToTime: endTime.split('+')[0],
+                    // ToTime: endTime,
                     Id: bookingId,
                     resource: {
                         Id: resource
@@ -113,14 +125,101 @@ const updateBooking = (resource, startTime, endTime, bookingId) => {
                 }
             })
         })
-    // console.log(response.getContentText())
+
     const result = JSON.parse(response.getContentText())
+    // console.log(result)
     //{"Status":200,"Message":"Your booking has been updated","Value":null,"OpenInDialog":false,"OpenInWindow":false,"RedirectURL":null,"JavaScript":null,"UpdatedOn":null,"UpdatedBy":null,"Errors":null,"WasSuccessful":true}
     return {
         error: !result.WasSuccessful,
         message: result.Message
     }
 }
+
+
+const createBooking = (resource, startTime, endTime) => {
+    const accessToken = getToken()
+
+    if (accessToken.error) {
+        // console.log(accessToken.error)
+        return {error: accessToken.error}
+    }
+    // console.log(resource, startTime, endTime, bookingId)
+    // console.log('startTime', startTime, typeof(startTime))
+
+    const response = UrlFetchApp.fetch(
+        `${API_ENDPOINT}/basket/CreateInvoice`,
+        {
+            method: 'POST',
+            headers: {
+                accept: 'application/json',
+                'Content-Type': 'application/json',
+                authorization: `Bearer ${accessToken}`
+            },
+            payload: JSON.stringify({
+                "basket": [{
+                    "Type": "booking",
+                    "Booking": {
+                        "FromTime": startTime.split('+')[0], // TODO better format fix
+                        "ToTime": endTime.split('+')[0],
+                        "ResourceId": resource,
+                        // "FloorPlanDeskId": null,
+                        // "BookingVisitors": [],
+                        // "BookingProducts": []
+                    }
+                }], "discountCode": null
+            })
+        })
+    // console.log(response.getContentText())
+    const result = response.getContentText() ? JSON.parse(response.getContentText()) : {Message:"yess", WasSuccessful:true}
+    //{"Status":200,"Message":"Your booking has been updated","Value":null,"OpenInDialog":false,"OpenInWindow":false,"RedirectURL":null,"JavaScript":null,"UpdatedOn":null,"UpdatedBy":null,"Errors":null,"WasSuccessful":true}
+    return {
+        error: !result.WasSuccessful,
+        message: result.Message
+    }
+}
+
+const deleteBookings = (e) => {
+    const accessToken = getToken()
+
+    if (accessToken.error) {
+        return {error: accessToken.error}
+    }
+
+    const selectedSlots = e.formInputs.free_slots
+
+    if (!selectedSlots) {
+        return cardWithNotification(e, onHomepage, 'No bookings selected')
+    }
+
+    let counter = 0
+    let result = {}
+
+    for (let bookingId of selectedSlots) {
+        const response = UrlFetchApp.fetch(
+            `${API_ENDPOINT}/bookings/deletejson/${bookingId}`,
+            {
+                method: 'POST',
+                headers: {
+                    accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    authorization: `Bearer ${accessToken}`
+                }
+            }
+        )
+
+        result = JSON.parse(response.getContentText())
+        if (result.WasSuccessful) {
+            counter ++
+        } else {
+            console.log(result.Message)
+        }
+    }
+
+    const msg = counter>0 ? `Deleted ${counter} booking(s).` : `No bookings deleted: ${result.Message}`
+
+    return cardWithNotification(e, onHomepage, msg)
+}
+
 
 
 /**
@@ -133,7 +232,7 @@ const getBookingCalendar = (
     startTime = '2024-04-10T10:30:00+02:00',
     endTime = '2024-04-10T11:00:00+02:00'
 ) => {
-    response = UrlFetchApp.fetch(
+    const response = UrlFetchApp.fetch(
         `${API_ENDPOINT}/bookings/fullCalendarBookings`,
         {
             method: 'GET',
@@ -151,7 +250,6 @@ const getBookingCalendar = (
 
     const bookings = JSON.parse(response.getContentText())
     const resources = getRooms()
-    // console.log(resources)
 
     const eventStartTime = new Date(startTime)
     const eventEndTime = new Date(endTime)
@@ -165,7 +263,7 @@ const getBookingCalendar = (
 
         // console.log(`${resourceStartTime}\n${resourceEndTime}`)
 
-        if (resourceEndTime > eventStartTime && resourceStartTime < eventEndTime && bookings[i].coworkerId!==coworkerId) {
+        if (resourceEndTime > eventStartTime && resourceStartTime < eventEndTime && bookings[i].coworkerId !== coworkerId) {
             // console.log(`${bookings[i].title}, start: ${resourceStartTime}, end: ${resourceEndTime}`, bookings[i].id)
             delete resources[bookings[i].title]
         }
@@ -176,13 +274,13 @@ const getBookingCalendar = (
 
 
 const getCoworkerId = () => {
-      const accessToken = getToken()
+    const accessToken = getToken()
 
     if (accessToken.error) {
         return {error: accessToken.error}
     }
 
-      response = UrlFetchApp.fetch(
+    response = UrlFetchApp.fetch(
         `${API_ENDPOINT}/profile?_resource=Coworker`,
         {
             method: 'GET',
@@ -211,6 +309,11 @@ const fixTimezone = (date = '2024-04-14T22:00Z') => {
     dateFormat.setHours(dateFormat.getHours() - 2) // will work only for GMT+2
     // console.log(dateFormat)
     return dateFormat
+}
+
+const getNewestBookingId = () => {
+    const response = listBookingsRequest()
+    return String(JSON.parse(response.getContentText()).MyBookings[0].Id)
 }
 
 

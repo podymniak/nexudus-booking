@@ -26,7 +26,7 @@
   "addOns": {
     "common": {
       "name": "Room Booking",
-      "logoUrl": "https://github.com/podymniak/podymniak.github.io/blob/main/images/_teaBreakColorInverted.png?raw=true",
+      "logoUrl": "https://raw.githubusercontent.com/podymniak/podymniak.github.io/refs/heads/main/images/_teaBreakColorInverted.png",
       "useLocaleFromApp": true,
       "homepageTrigger": {
         "runFunction": "onHomepage",

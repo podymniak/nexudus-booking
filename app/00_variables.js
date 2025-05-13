@@ -11,20 +11,12 @@ const PRIMARY_CALENDAR = 'primary'
 const PRIMARY_BUTTON_LINK = 'https://workspace.google.com/marketplace/app/room_booking/375198058937'
 const NEXUDUS_LOCAL_WEBSITE = 'https://warszawalixa.spaces.nexudus.com'
 const NEXUDUS_CALENDAR = `${NEXUDUS_LOCAL_WEBSITE}/bookings/calendar`
-const OFFICE_MAP = "https://drive.google.com/file/d/1sa43ivNQgQx3TcLhCuaUXkOYzPCyajzV/preview"
-const OFFICE_MINI_MAP = "https://github.com/podymniak/nexudus-booking/blob/main/Mapa_pokoi_mala.png?raw=true"
+const OFFICE_MAP = "https://drive.google.com/file/d/1CmEWRw0SkgGf7UTCmtBwxHwpWDOTDAfn/preview"
+const OFFICE_MINI_MAP = "https://raw.githubusercontent.com/podymniak/nexudus-booking/refs/heads/main/mapa_pokoi_v3_mini.png"
 // Mini map must be in a small resolution and publicly available
 
 /** Script/user properties' names */
-const VIP_USERS = 'VIP_USERS'
-const SAVED_BOOKINGS_NAME = 'SAVED_BOOKINGS'
-const BOOKED_BOOKINGS_NAME = 'BOOKED_BOOKINGS'
 // const REFRESH_TOKEN_NAME = 'REFRESH_TOKEN'
 const ACCESS_TOKEN_NAME = 'ACCESS_TOKEN'
 const PASSWORD_NAME = 'PASSWORD'
 const COWORKER_ID_NAME = 'COWORKER_ID'
-
-/** Special VIP section */
-const setVIPs = (value='comma,separated.emails') => PropertiesService.getUserProperties().setProperty(VIP_USERS, value)
-const VIPS = (PropertiesService.getUserProperties().getProperty(VIP_USERS) || '').split(',')
-const MAX_SLOTS = VIPS.includes(USER_EMAIL) ? 20 : 10

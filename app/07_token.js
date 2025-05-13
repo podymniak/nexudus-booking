@@ -6,7 +6,7 @@ const setPassword = (value) => PropertiesService.getUserProperties().setProperty
 const getPassword = () => PropertiesService.getUserProperties().getProperty(PASSWORD_NAME)
 const setAccessToken = (value) => PropertiesService.getUserProperties().setProperty(ACCESS_TOKEN_NAME, value)
 const getAccessToken = () => PropertiesService.getUserProperties().getProperty(ACCESS_TOKEN_NAME)
-const deleteUserProps = () => PropertiesService.getUserProperties().deleteAllProperties()
+// const deleteUserProps = () => PropertiesService.getUserProperties().deleteAllProperties()
 const deleteAccessToken = () => PropertiesService.getUserProperties().deleteProperty(ACCESS_TOKEN_NAME)
 // const setRefreshToken = (value) => PropertiesService.getUserProperties().setProperty(REFRESH_TOKEN_NAME, value)
 // const getRefreshToken = () => PropertiesService.getUserProperties().getProperty(REFRESH_TOKEN_NAME)
