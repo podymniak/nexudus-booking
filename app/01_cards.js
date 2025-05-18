@@ -28,8 +28,8 @@ const homePageCard = e => {
 
     const section = CardService.newCardSection()
         .setHeader('📖 Bookings')
-        .setCollapsible(true)
-        .setNumUncollapsibleWidgets(2)
+        // .setCollapsible(true)
+        // .setNumUncollapsibleWidgets(2)
 
     const myFutureBookingsWidget = CardService.newSelectionInput()
         .setFieldName('free_slots')
@@ -53,13 +53,13 @@ const homePageCard = e => {
 
         section.addWidget(myFutureBookingsWidget)
 
-        const deleteBookingsButton = CardService.newTextButton()
-            .setText('Delete selected bookings')
-            .setOnClickAction(
-                CardService.newAction().setFunctionName('deleteBookings')
-            )
-
-        section.addWidget(deleteBookingsButton)
+        // const deleteBookingsButton = CardService.newTextButton()
+        //     .setText('Delete selected bookings')
+        //     .setOnClickAction(
+        //         CardService.newAction().setFunctionName('deleteBookings')
+        //     )
+        //
+        // section.addWidget(deleteBookingsButton)
     }
 
     return CardService.newCardBuilder()
@@ -110,20 +110,6 @@ const eventCard = (event) => {
 
 
 /** SECTIONS */
-// const availableBookingsWidget = () => {
-//     const availableBookings = getAvailableBookings().length
-//     return CardService.newTextParagraph().setText(
-//         `<b>Available slots:</b> ${availableBookings < MAX_SLOTS ? availableBookings : MAX_SLOTS} (max ${MAX_SLOTS})`
-//     )
-// }
-
-const mapButton = () => CardService.newTextButton()
-    .setText('Office map')
-    .setOpenLink(CardService.newOpenLink()
-        .setUrl(OFFICE_MAP)
-        .setOpenAs(CardService.OpenAs.OVERLAY))
-
-
 const sectionMap = () => CardService.newCardSection().setHeader('🗺️ Office map')
     .addWidget(mapImage())
 
@@ -137,7 +123,6 @@ const mapImage = () => CardService.newImage()
     )
 
 
-
 const bookingStatusSection = (eventProps) => {
     const section = CardService.newCardSection().setHeader('Booking Status')
 
@@ -145,17 +130,19 @@ const bookingStatusSection = (eventProps) => {
         return section.addWidget(CardService.newTextParagraph().setText(`No room booked.`))
     }
 
+
     return section
         .addWidget(CardService.newTextParagraph()
             .setText(`<b>${eventProps.resourceName}</b>
       📅 ${eventProps.startTime.replace("T", " 🕒 ").split('+')[0]} - start
       📅 ${eventProps.endTime.replace("T", " 🕒 ").split('+')[0]} - end
       `))
-        // .addWidget(CardService.newTextButton()
-        //     .setText('See my bookings')
-        //     .setOpenLink(CardService.newOpenLink()
-        //         // .setUrl(`${NEXUDUS_LOCAL_WEBSITE}/profile/bookings?booking_id=${eventProps.bookingId}`))) // nie robotaje ;(
-        //         .setUrl(`${NEXUDUS_LOCAL_WEBSITE}/profile/bookings`)))
+        .addWidget(CardService.newTextButton()
+            .setText("Delete booking")
+            .setTextButtonStyle(CardService.TextButtonStyle.TEXT)
+            .setOnClickAction(
+                CardService.newAction().setFunctionName('deleteBookingAction')
+            ))
 }
 
 const availableResourcesSection = (event) => {
@@ -192,13 +179,12 @@ const availableResourcesSection = (event) => {
         .setText(bookButtonMessage)
         .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
         .setOnClickAction(
-            CardService.newAction().setFunctionName('bookResource')
+            CardService.newAction().setFunctionName('createBookingAction')
         )
 
     return section
         .addWidget(availableResourcesWidget)
         .addWidget(bookButton)
-        // .addWidget(mapButton())
 }
 
 

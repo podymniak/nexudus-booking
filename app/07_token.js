@@ -84,7 +84,17 @@ const getToken = (password = getPassword(), attempt = 0) => {
 
 const testToken = (accessToken, password) => {
     try {
-        listBookingsRequest(accessToken)
+        UrlFetchApp.fetch(
+            `${API_ENDPOINT}/user/me`,
+            {
+                method: 'GET',
+                headers: {
+                    accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    authorization: `Bearer ${accessToken}`
+                }
+            })
+        // Logger.log(`Test: ${response.getContentText()}`)
     } catch (error) {
         Logger.log(`Access error: ${error}`)
         deleteAccessToken()

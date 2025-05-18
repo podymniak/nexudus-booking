@@ -25,7 +25,7 @@
   "runtimeVersion": "V8",
   "addOns": {
     "common": {
-      "name": "Room Booking",
+      "name": "Room Booking TEST",
       "logoUrl": "https://raw.githubusercontent.com/podymniak/podymniak.github.io/refs/heads/main/images/_teaBreakColorInverted.png",
       "useLocaleFromApp": true,
       "homepageTrigger": {
