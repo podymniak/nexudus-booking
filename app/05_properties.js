@@ -1,6 +1,6 @@
 /**
  * This file is for working with script / user properties
- * Access-related properties are in 07_token.js
+ * Access-related properties are in 06_token.js
  */
 
 /** Coworker ID */
