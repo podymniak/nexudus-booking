@@ -37,6 +37,8 @@ const setPasswordFromInput = (e) => {
  */
 const getToken = (password = getPassword(), attempt = 0) => {
     let accessToken = getAccessToken()
+    // console.log(accessToken)
+    // console.log(USER_EMAIL)
 
     if (accessToken) {
         // Logger.log('access token exists')
@@ -70,6 +72,7 @@ const getToken = (password = getPassword(), attempt = 0) => {
         )
 
         accessToken = JSON.parse(response.getContentText()).access_token
+        // console.log(accessToken)
         setAccessToken(accessToken)
         // Logger.log('new access token generated')
         return accessToken
@@ -102,3 +105,48 @@ const testToken = (accessToken, password) => {
     }
 }
 
+
+function webTest() {
+  const password = getPassword()
+  
+  const response = UrlFetchApp.fetch("https://warszawalixa.spaces.nexudus.com/api/token", {
+  "headers": {
+    "accept": "*/*",
+    "accept-language": "en-US,en;q=0.9",
+    "client_id": "nexudus.portal.marta.podymniak@delvedeeper.com",
+    "content-type": "application/x-www-form-urlencoded",
+    "priority": "u=1, i",
+    "sec-ch-ua": "\"Chromium\";v=\"136\", \"Google Chrome\";v=\"136\", \"Not.A/Brand\";v=\"99\"",
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": "\"Windows\"",
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin"
+  },
+  "referrer": "https://warszawalixa.spaces.nexudus.com/login",
+  "referrerPolicy": "strict-origin-when-cross-origin",
+  "body": `grant_type=password&username=marta.podymniak%40delvedeeper.com&password=${password}&totp=`,
+  "method": "POST",
+  "mode": "cors",
+  "credentials": "include"
+});
+
+  console.log(response.getResponseCode());
+  console.log(response.getContentText());
+}
+
+const webTestic = () => {
+  const response = UrlFetchApp.fetch("https://warszawalixa.spaces.nexudus.com/api/token", {
+    "headers": {
+      "accept": "application/json",
+      "client_id": "nexudus.portal.maksim.arol@delvedeeper.com",
+      "content-type": "application/x-www-form-urlencoded",
+    },
+    // "body": {"grant_type": "password", "username": "maksim.arol@delvedeeper.com", "password": "123Palka!"},
+    "body": {"grant_type": "refresh_token", "refresh_token": "54e0544dd0ed4c2bb0934b3c44fee5fe"},
+    "method": "POST"
+  });
+
+  console.log(response.getResponseCode());
+  console.log(response.getContentText());
+}

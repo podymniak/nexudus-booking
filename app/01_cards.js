@@ -173,8 +173,8 @@ const availableResourcesSection = (event) => {
             .addItem(resourceName, `${resourceName}|;|${resourceId}`, resourceId===eventResourceId)
     }
 
-    const bookButtonMessage = bookingId ? 'Update booking' : 'Book a room'
-
+    const bookButtonMessage = bookingId ? `${spaces(12)}Update booking${spaces(12)}` : `${spaces(15)}Book a room${spaces(15)}`
+    
     const bookButton = CardService.newTextButton()
         .setText(bookButtonMessage)
         .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
@@ -212,7 +212,7 @@ const noPasswordCard = () => {
 const getHeader = (
     subtitle = 'Brought to you by Marta 🌷 ⁽ᵃⁿᵈ ᴹᵃˣ⁾',
     title = 'The power of Convenience',
-    icon = 'https://github.com/podymniak/podymniak.github.io/blob/main/images/_teaBreakColor.png?raw=true'
+    icon = TEA_BREAK_LOGO
 ) => CardService.newCardHeader()
     .setTitle(title)
     .setSubtitle(subtitle)
@@ -223,8 +223,9 @@ const getFooter = () => CardService.newFixedFooter()
     .setPrimaryButton(
         CardService.newTextButton()
             // .setText('SHARE THE LOVE')
-            .setText('SHARE')
-            .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
+            .setText('♡ SHARE')
+            // .setTextButtonStyle(CardService.TextButtonStyle.FILLED_TONAL)
+            .setBackgroundColor("#616161")
             .setOpenLink(CardService.newOpenLink().setUrl(PRIMARY_BUTTON_LINK))
     )
     .setSecondaryButton(
@@ -237,3 +238,5 @@ const cardWithNotification = (e, targetCard, text = 'ERROR_MSG') => CardService.
     .setNotification(CardService.newNotification().setText(text))
     .setNavigation(CardService.newNavigation().updateCard(targetCard(e)))
     .build()
+
+const spaces = num => '&nbsp;'.repeat(num)

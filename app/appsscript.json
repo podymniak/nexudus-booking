@@ -12,7 +12,9 @@
   "exceptionLogging": "STACKDRIVER",
   "urlFetchWhitelist": [
     "https://warszawalixa.spaces.nexudus.com/",
-    "https://spaces.nexudus.com/"
+    "https://warszawalixa.spaces.nexudus.com/api/token",
+    "https://spaces.nexudus.com/",
+    "https://ipinfo.io/ip"
   ],
   "oauthScopes": [
     "https://www.googleapis.com/auth/calendar.addons.execute",
@@ -25,8 +27,8 @@
   "runtimeVersion": "V8",
   "addOns": {
     "common": {
-      "name": "Room Booking TEST",
-      "logoUrl": "https://raw.githubusercontent.com/podymniak/podymniak.github.io/refs/heads/main/images/_teaBreakColorInverted.png",
+      "name": "Room Booking",
+      "logoUrl": "https://raw.githubusercontent.com/podymniak/podymniak.github.io/refs/heads/main/images/_teaBreakColorInvertedBlack.png",
       "useLocaleFromApp": true,
       "homepageTrigger": {
         "runFunction": "onHomepage",

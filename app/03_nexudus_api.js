@@ -129,10 +129,6 @@ class Book {
 
 
     genericRequest(method, url, payload, include_token=true) {
-        if (this.token.error) {
-            return {error: this.token.error}
-        }
-
         try {
             const options = {
                 method: method,
@@ -148,6 +144,9 @@ class Book {
 
             if (include_token) {
                 options.headers.authorization = `Bearer ${this.token}`
+                if (this.token.error) {
+                    return {error: this.token.error}
+                }
             }
 
             const response =  UrlFetchApp.fetch(url, options)
