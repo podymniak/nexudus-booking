@@ -100,8 +100,8 @@ function listMyFutureBookings() {
  end: '2024-04-15T13:00:00+02:00'
  */
 const getBookingCalendar = (
-    startTime = '2024-04-10T10:30:00+02:00',
-    endTime = '2024-04-10T11:00:00+02:00'
+    startTime = '2025-11-17T13:30:00+01:00',
+    endTime = '2025-11-17T14:30:00+01:00'
 ) => {
     const api = new Book ()
 
@@ -115,8 +115,8 @@ const getBookingCalendar = (
     const coworkerId = getCoworkerIdProperty()
 
     for (let i in bookings) {
-        const resourceStartTime = fixTimezone(bookings[i].start) // 2024-04-14T22:00Z
-        const resourceEndTime = fixTimezone(bookings[i].end)
+        const resourceStartTime = fixTimezone(bookings[i].start, startTime) // 2024-04-14T22:00Z
+        const resourceEndTime = fixTimezone(bookings[i].end, endTime)
 
         // console.log(`${resourceStartTime}\n${resourceEndTime}`)
 
@@ -125,7 +125,7 @@ const getBookingCalendar = (
             delete resources[bookings[i].title]
         }
     }
-    // console.log(resources)
+    console.log(resources)
     return resources
 }
 
@@ -156,9 +156,13 @@ function getRooms(api) {
  * 2 hours are subtracted
  * TODO fix timezone issue
  */
-const fixTimezone = (date = '2024-04-14T22:00Z') => {
+const fixTimezone = (date = '2024-04-14T22:00Z', eventDate = '2025-11-17T13:30:00+01:00') => {
+    // console.log(eventDate)
+    const offset = eventDate.match(/([+-]\d{2}):\d{2}$/)[1]
+    const offsetNumber = +offset
+
     const dateFormat = new Date(date)
-    dateFormat.setHours(dateFormat.getHours() - 2) // will work only for GMT+2
+    dateFormat.setHours(dateFormat.getHours() - offsetNumber)
     // console.log(dateFormat)
     return dateFormat
 }
