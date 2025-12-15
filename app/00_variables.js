@@ -38,7 +38,7 @@ const OFFICE_ROOMS = {
     'Cytryn': 1415074872,
     'Rubin': 1415074969,
     'Onyks': 1415074970,
-    'Chillout': 1415077508,
+    // 'Chillout': 1415077508,
     'Jaspis': 1415074971,
 }
 
