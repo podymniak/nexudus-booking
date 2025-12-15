@@ -83,9 +83,13 @@ function listMyFutureBookings() {
     for (let i in myBookings) {
         const bookingId = myBookings[i].Id
 
-        myFutureBookings[bookingId] = `📅 ${myBookings[i].FromTime.split('T')[0]} 
-            🕒 ${myBookings[i].FromTime.split('T')[1].slice(0, 5)}-${myBookings[i].ToTime.split('T')[1].slice(0, 5)} 
-            ${myBookings[i].ResourceName}`
+        const roomName = USE_OWN_ROOM_LIST
+            ? OFFICE_ROOMS_BY_ID[myBookings[i].ResourceId] ?? myBookings[i].ResourceName
+            : myBookings[i].ResourceName
+
+        myFutureBookings[bookingId] = `📅 ${myBookings[i].FromTime.split('T')[0]}
+            🕒 ${myBookings[i].FromTime.split('T')[1].slice(0, 5)}-${myBookings[i].ToTime.split('T')[1].slice(0, 5)}
+            ${roomName}`
     }
 
     // console.log(JSON.stringify(myFutureBookings, " ", 4))
@@ -106,7 +110,8 @@ const getBookingCalendar = (
     const api = new Book ()
 
     const bookings = api.getBookingCalendar(startTime, endTime)
-    const resources = getRooms(api)
+    const resources = USE_OWN_ROOM_LIST ? OFFICE_ROOMS : getRooms(api)
+    // console.log('resources', resources)
 
     const eventStartTime = new Date(startTime)
     const eventEndTime = new Date(endTime)
@@ -135,7 +140,7 @@ const getBookingCalendar = (
  * Excludes resource IDs defined in EXCLUDED_RESOURCES
  * https://developers.nexudus.com/reference/search-resources
  */
-function getRooms(api) {
+function getRooms(api = new Book ()) {
     const response = api.getAllResources()
     const resources = response.Resources
 
@@ -146,6 +151,7 @@ function getRooms(api) {
         }
     }
 
+    console.log(rooms)
     return rooms
 }
 
