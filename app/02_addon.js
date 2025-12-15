@@ -56,7 +56,7 @@ const createBookingAction = (e) => {
 const deleteBookingAction = (e) => {
     const event = getCalendarEvent(e.calendar.id)
     const bookingId = readBookingIdPropertiesFromEvent(event)
-    console.log('bookingId',bookingId)
+    // console.log('bookingId',bookingId)
 
     const api = new Book()
     const result = api.deleteBooking(bookingId)
@@ -130,7 +130,7 @@ const getBookingCalendar = (
             delete resources[bookings[i].title]
         }
     }
-    console.log(resources)
+    // console.log(resources)
     return resources
 }
 
@@ -151,7 +151,7 @@ function getRooms(api = new Book ()) {
         }
     }
 
-    console.log(rooms)
+    // console.log(rooms)
     return rooms
 }
 
