@@ -104,13 +104,14 @@ function listMyFutureBookings() {
  end: '2024-04-15T13:00:00+02:00'
  */
 const getBookingCalendar = (
-    startTime = '2025-11-17T13:30:00+01:00',
-    endTime = '2025-11-17T14:30:00+01:00'
+    startTime = '2026-03-18T10:30:00+01:00',
+    endTime = '2026-03-18T11:30:00+01:00'
 ) => {
     const api = new Book ()
 
     const bookings = api.getBookingCalendar(startTime, endTime)
-    const resources = USE_OWN_ROOM_LIST ? OFFICE_ROOMS : getRooms(api)
+    let resources = getRooms(api)
+    // const resources = USE_OWN_ROOM_LIST ? OFFICE_ROOMS : getRooms(api)
     // console.log('resources', resources)
 
     const eventStartTime = new Date(startTime)
@@ -129,6 +130,15 @@ const getBookingCalendar = (
             // console.log(`${bookings[i].title}, start: ${resourceStartTime}, end: ${resourceEndTime}`, bookings[i].id)
             delete resources[bookings[i].title]
         }
+    }
+    // console.log(resources)
+    if (USE_OWN_ROOM_LIST) {
+        resources = Object.fromEntries(
+          Object.entries(resources).map(([key, id]) => [
+            OFFICE_ROOMS_BY_ID[id] || key,
+            id
+          ])
+        )
     }
     // console.log(resources)
     return resources
