@@ -6,7 +6,6 @@ I am neither associated with nor employed by Nexudus. My usage of their publicly
 
 ## Description
 This tool is designed to facilitate room bookings from Google Calendar for office spaces that are integrated with the Nexudus booking system. 
-- Currently, the tool operates only within the Warsaw timezone.
 
 ## How to Push to Google Apps Script
 
